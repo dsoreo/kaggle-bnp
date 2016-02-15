@@ -111,8 +111,3 @@ if(CREATE_SUB){
   submission <- data.frame(ID=test_id,PredictedProb=test_predictions)
   write.csv(submission,"xgb_v3.csv",row.names=FALSE)
 }
-
-#0.4591959
-#0.4600833
-#0.4603292
-#0.45933
