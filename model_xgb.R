@@ -99,7 +99,7 @@ gc(reset=TRUE)
 #zero.var.variables <- rownames(zero.var[zero.var$zeroVar==TRUE,])
 
 score <- c(0,0,0,0,0)
-for (i in 2:5) {
+for (i in 1:5) {
   cat("Creating model ",i, " of 5\n")
   cat("Sample Data\n")
   set.seed(1234)
