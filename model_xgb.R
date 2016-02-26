@@ -57,7 +57,8 @@ for (i in 1:5) {
   if(VISUALIZE){
     xgb_dump <- xgb.dump(xgb_model, with.stats = T)
     head(xgb_dump,10)
-    names <- names(train_train)[1:(ncol(train_train)-1)]
+    names <- names(train_train)[1:(ncol(train_train))]
+    names <- names[-match("target",names)]
     imp_matrix <- xgb.importance(names,model=xgb_model)
     xgb.plot.importance(imp_matrix[1:50,])
   }
@@ -73,3 +74,4 @@ print(Sys.time()-start_time)
 
 #Raw 5 fold cv score 0.4638590 0.4576357 0.4546944 0.4626775 0.4621207
 #Raw 5 fold cv score 0.4629084 0.4563442 0.4535088 0.4608090 0.4632652
+#5 fold stacking - 0.4626662 0.4575043 0.4541675 0.4606216 0.4630127
