@@ -55,6 +55,10 @@ for (i in 1:N_FOLDS){
   gc(reset=TRUE)
 }
 rf_test_pred <- rf_test_pred/N_FOLDS
+write.csv(rf_val_pred,"rf_val_pred_v2.csv",row.names=FALSE)
+write.csv(rf_test_pred,"rf_test_pred_v2.csv",row.names=FALSE)
 
 #65-0.4686909
 #55-0.468484
+#RF scores - 0.4659237 0.4679641 0.4650752 0.4596200 0.4606782 0.4594892 0.4750089 0.4564418 0.4586602 0.4701439
+# RF score with n_na column - 0.4650656 0.4690668 0.4640494 0.4590614 0.4600039 0.4595599 0.4746004 0.4561164 0.4576735 0.4687471

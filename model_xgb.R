@@ -4,6 +4,11 @@ source('./code/data_processing.R')
 CREATE_SUB <- TRUE
 VISUALIZE <- FALSE
 
+# rf_val_pred <- read_csv('rf_val_pred.csv')
+# rf_val_pred <- rf_val_pred$x
+# rf_test_pred <- read_csv('rf_test_pred.csv')
+# rf_test_pred <- rf_test_pred$x
+
 cat("Get RF values for stacking\n")
 train_data$rf_pred <- rf_val_pred
 test_data$rf_pred <- rf_test_pred
@@ -55,8 +60,8 @@ for (i in 1:5) {
   print(logLoss(train_validation$target,xgb_predictions))
   
   if(VISUALIZE){
-    xgb_dump <- xgb.dump(xgb_model, with.stats = T)
-    head(xgb_dump,10)
+    #xgb_dump <- xgb.dump(xgb_model, with.stats = T)
+    #head(xgb_dump,10)
     names <- names(train_train)[1:(ncol(train_train))]
     names <- names[-match("target",names)]
     imp_matrix <- xgb.importance(names,model=xgb_model)
@@ -66,7 +71,7 @@ for (i in 1:5) {
   if(CREATE_SUB){
     test_predictions <- predict(xgb_model,data.matrix(test_data))
     submission <- data.frame(ID=test_id,PredictedProb=test_predictions)
-    filename <- paste("xgb_sub_v8_file_",i,".csv",sep="")
+    filename <- paste("xgb_sub_v9_file_",i,".csv",sep="")
     write.csv(submission,filename,row.names=FALSE)
   }
 }
@@ -75,3 +80,4 @@ print(Sys.time()-start_time)
 #Raw 5 fold cv score 0.4638590 0.4576357 0.4546944 0.4626775 0.4621207
 #Raw 5 fold cv score 0.4629084 0.4563442 0.4535088 0.4608090 0.4632652
 #5 fold stacking - 0.4626662 0.4575043 0.4541675 0.4606216 0.4630127
+#5 fold stacking (with n_na) - 0.4628117 0.4574310 0.4543138 0.4604529 0.4622149

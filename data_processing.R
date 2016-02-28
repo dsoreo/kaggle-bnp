@@ -12,11 +12,15 @@ impute_median <- function(val){
   return(val)
 }
 
-cat("Read data\n")
+cat("data_processing.R - Read data\n")
 train_data <- read_csv('train.csv')
 test_data <- read_csv('test.csv')
 
-cat("Get columns with many NA\n")
+cat("data_processing.R - Adding column for number of NA in each row\n")
+train_data$n_na <- colSums(apply(train_data,1,is.na))
+test_data$n_na <- colSums(apply(test_data,1,is.na))
+
+cat("data_processing.R - Get columns with many NA\n")
 na_col <- 0
 if(IS_RF){
   #To get na in each column
@@ -35,6 +39,7 @@ if(IS_RF){
   rm(alot_na_train,alot_na_test)
 }
 
+cat("data_processing.R - Saving target and ID variables\n")
 train_target <- train_data$target
 train_id <- train_data$ID
 test_id <- test_data$ID
@@ -49,22 +54,24 @@ nv <- names(c_d)[unlist(lapply(c_d,class))!="character"]
 fv1 <- c("v22")
 fv <- fv[-match(fv1,fv)]
 
-cat("One hot encoding for factor variables\n")
+cat("data_processing.R - One hot encoding for factor variables\n")
 for(i in 1:length(fv)){
   v <- as.data.frame(c_d[,match(fv[i],colnames(c_d))])
   names(v) <- c(paste(fv[i],"_",sep=""))
   df <- data.frame(model.matrix(~.-1,v))
+  #remove one redundant column, e.g We only need 3 for 4 factors.
+  #df <- df[,-c(1)]
   c_d <- cbind(c_d,df)
 }
 c_d <- c_d[,-match(fv,colnames(c_d))]
 
-cat("Replacing factor variables with large values into numeric form\n")
+cat("data_processing.R - Replacing factor variables with large values into numeric form\n")
 for (f in fv1) {
   levels <- unique(c_d[[f]])
   c_d[[f]] <- as.integer(factor(c_d[[f]], levels=levels))
 }
 
-cat("Impute NAs with median\n")
+cat("data_processing.R - Impute NAs with median\n")
 c_d <- as.data.frame(apply(c_d,2,impute_median))
 
 train_data <- c_d[1:nrow(train_data),]
