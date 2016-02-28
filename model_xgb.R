@@ -4,10 +4,10 @@ source('./code/data_processing.R')
 CREATE_SUB <- TRUE
 VISUALIZE <- FALSE
 
-# rf_val_pred <- read_csv('rf_val_pred.csv')
-# rf_val_pred <- rf_val_pred$x
-# rf_test_pred <- read_csv('rf_test_pred.csv')
-# rf_test_pred <- rf_test_pred$x
+rf_val_pred <- read_csv('rf_val_pred.csv')
+rf_val_pred <- rf_val_pred$x
+rf_test_pred <- read_csv('rf_test_pred.csv')
+rf_test_pred <- rf_test_pred$x
 
 cat("Get RF values for stacking\n")
 train_data$rf_pred <- rf_val_pred
@@ -71,7 +71,7 @@ for (i in 1:5) {
   if(CREATE_SUB){
     test_predictions <- predict(xgb_model,data.matrix(test_data))
     submission <- data.frame(ID=test_id,PredictedProb=test_predictions)
-    filename <- paste("xgb_sub_v9_file_",i,".csv",sep="")
+    filename <- paste("xgb_sub_v10_file_",i,".csv",sep="")
     write.csv(submission,filename,row.names=FALSE)
   }
 }
