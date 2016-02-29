@@ -16,6 +16,11 @@ cat("data_processing.R - Read data\n")
 train_data <- read_csv('train.csv')
 test_data <- read_csv('test.csv')
 
+# cat("Remove redundant variables\n")
+# red_var <- c("v91")
+# train_data <- train_data[,-match(red_var,colnames(train_data))]
+# test_data <- test_data[,-match(red_var,colnames(test_data))]
+
 cat("data_processing.R - Adding column for number of NA in each row\n")
 train_data$n_na <- colSums(apply(train_data,1,is.na))
 test_data$n_na <- colSums(apply(test_data,1,is.na))
@@ -49,6 +54,13 @@ test_data <- test_data[,-match(c("ID"),colnames(test_data))]
 
 c_d <- rbind(train_data,test_data)
 
+#cat("Create v22 frequency\n")
+#val_freq <- as.data.frame(table(c_d$v22))
+#names(val_freq) <- c("v22","v22_freq")
+#c_d <- merge(c_d,val_freq,by.x="v22",by.y="v22",all.x=TRUE,all.y=FALSE)
+# c_d <- c_d[,-match(c("v22"),colnames(c_d))]
+# c_d$v22_freq <- as.character(c_d$v22_freq)
+
 fv <- names(c_d)[unlist(lapply(c_d,class))=="character"]
 nv <- names(c_d)[unlist(lapply(c_d,class))!="character"]
 fv1 <- c("v22")
@@ -77,6 +89,12 @@ c_d <- as.data.frame(apply(c_d,2,impute_median))
 train_data <- c_d[1:nrow(train_data),]
 test_data <- c_d[(nrow(train_data)+1):nrow(c_d),]
 train_data$target <- train_target
+
+# cat("data_processing.R - Get zero variance variables\n")
+# zero.var <- nearZeroVar(train_data[,-match(c("target"),colnames(train_data))],saveMetrics = TRUE)
+# zero.var.variables <- rownames(zero.var[zero.var$zeroVar==TRUE,])
+# train_data <- train_data[,-match(zero.var.variables,colnames(train_data))]
+# test_data <- test_data[,-match(zero.var.variables,colnames(test_data))]
 
 rm(c_d,df,v,f,i,levels)
 gc(reset=TRUE)
