@@ -16,10 +16,13 @@ cat("data_processing.R - Read data\n")
 train_data <- read_csv('train.csv')
 test_data <- read_csv('test.csv')
 
-# cat("Remove redundant variables\n")
-# red_var <- c("v91")
-# train_data <- train_data[,-match(red_var,colnames(train_data))]
-# test_data <- test_data[,-match(red_var,colnames(test_data))]
+if(IS_GLMNET){
+  cat("Remove redundant variables\n")
+  #v91=v107,v71=v75,v17=v76,v46=v63,v25=v63,v26=v60,v9=v80+v122
+  red_var <- c("v91","v71","v17","v46","v25","v60","v9")
+  train_data <- train_data[,-match(red_var,colnames(train_data))]
+  test_data <- test_data[,-match(red_var,colnames(test_data))]
+}
 
 cat("data_processing.R - Adding column for number of NA in each row\n")
 train_data$n_na <- colSums(apply(train_data,1,is.na))
@@ -31,8 +34,13 @@ if(IS_RF){
   #To get na in each column
   train_na <- colSums(apply(train_data,1,is.na))
   test_na <- colSums(apply(test_data,1,is.na))
-  alot_na_train <- train_data[train_na==100,]
-  alot_na_test <- test_data[test_na==100,]
+  if(IS_GLMNET){
+    alot_na_train <- train_data[train_na==95,] #variables removed
+    alot_na_test <- test_data[test_na==95,] #variables removed
+  } else {
+    alot_na_train <- train_data[train_na==100,]
+    alot_na_test <- test_data[test_na==100,]
+  }
   sum_isna <- function(x){
     return(sum(is.na(x)))
   }
@@ -90,11 +98,26 @@ train_data <- c_d[1:nrow(train_data),]
 test_data <- c_d[(nrow(train_data)+1):nrow(c_d),]
 train_data$target <- train_target
 
-# cat("data_processing.R - Get zero variance variables\n")
-# zero.var <- nearZeroVar(train_data[,-match(c("target"),colnames(train_data))],saveMetrics = TRUE)
-# zero.var.variables <- rownames(zero.var[zero.var$zeroVar==TRUE,])
-# train_data <- train_data[,-match(zero.var.variables,colnames(train_data))]
-# test_data <- test_data[,-match(zero.var.variables,colnames(test_data))]
+if (IS_GLMNET){
+  cat("data_processing.R - Get zero variance variables\n")
+  zero.var <- nearZeroVar(train_data[,-match(c("target"),colnames(train_data))],saveMetrics = TRUE)
+  zero.var.variables <- rownames(zero.var[zero.var$zeroVar==TRUE,])
+  train_data <- train_data[,-match(zero.var.variables,colnames(train_data))]
+  test_data <- test_data[,-match(zero.var.variables,colnames(test_data))]
+  
+  cat("Do principle component analysis to remove low variance variables\n")
+  temp_train <- train_data[,-match(c("target"),colnames(train_data))]
+  pca_ans <- prcomp(temp_train,scale=TRUE)
+  eig <- (pca_ans$sdev)^2
+  variance <- eig*100/sum(eig)
+  cumvar <- cumsum(variance)
+  eig_df<- data.frame(eig = eig, variance = variance, cumvariance = cumvar)
+  eig_df$name <- rownames(pca_ans$rotation)
+  rm(temp_train)
+  
+  train_data <- train_data[,-c(323:371)]
+  test_data <- test_data[,-c(323:371)]
+}
 
 rm(c_d,df,v,f,i,levels)
 gc(reset=TRUE)

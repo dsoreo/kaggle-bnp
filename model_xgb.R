@@ -1,4 +1,6 @@
+setwd("~/Documents/Kaggle/kaggle_bnp")
 IS_RF <- FALSE
+IS_GLMNET <- FALSE
 N_FOLD <- 10
 source('./code/data_processing.R')
 
@@ -10,9 +12,25 @@ rf_val_pred <- rf_val_pred$x
 rf_test_pred <- read_csv('rf_test_pred_v2.csv')
 rf_test_pred <- rf_test_pred$x
 
+et_val_pred <- read_csv('./code/train_predictions_etc_v1.csv')
+et_val_pred <- et_val_pred$PredictedProb
+et_test_pred <- read_csv('./code/test_predictions_etc_v1.csv')
+et_test_pred <- et_test_pred$PredictedProb
+
+# glmnet_val_pred <- read_csv('glmnet_val_pred_v1.csv')
+# glmnet_val_pred <- glmnet_val_pred$x
+# glmnet_test_pred <- read_csv('glmnet_test_pred_v1.csv')
+# glmnet_test_pred <- glmnet_test_pred[,1]
+
 cat("Get RF values for stacking\n")
 train_data$rf_pred <- rf_val_pred
 test_data$rf_pred <- rf_test_pred
+train_data$et_pred <- et_val_pred
+test_data$et_pred <- et_test_pred
+
+# cat("Get GLMNET values for stacking\n")
+# train_data$glmnet_pred <- glmnet_val_pred
+# test_data$glmnet_pred <- glmnet_test_pred
 
 start_time <- Sys.time()
 score <- rep(0,N_FOLD)
@@ -40,7 +58,7 @@ for (i in 1:N_FOLD) {
   watchlist<-list(val=dval,train=dtrain)
   param <- list(  objective           = "reg:logistic", 
                   booster             = "gbtree",
-                  eta                 = 0.005,
+                  eta                 = 0.005, #Change to 0.001
                   max_depth           = 10, 
                   subsample           = 0.9,
                   colsample_bytree    = 0.7,
@@ -49,7 +67,7 @@ for (i in 1:N_FOLD) {
   
   xgb_model <- xgb.train(params=param,
                          data=dtrain,
-                         nrounds=12000,
+                         nrounds=15000,
                          watchlist=watchlist,
                          early.stop.round=500,
                          maximize=FALSE)
@@ -73,7 +91,7 @@ for (i in 1:N_FOLD) {
   if(CREATE_SUB){
     test_predictions <- predict(xgb_model,data.matrix(test_data))
     submission <- data.frame(ID=test_id,PredictedProb=test_predictions)
-    filename <- paste("xgb_sub_v12_file_",i,".csv",sep="")
+    filename <- paste("xgb_sub_v15_file_",i,".csv",sep="")
     write.csv(submission,filename,row.names=FALSE)
   }
 }
@@ -85,5 +103,5 @@ print(Sys.time()-start_time)
 #5 fold stacking (with n_na) - 0.4628117 0.4574310 0.4543138 0.4604529 0.4622149
 #5 fold - xgb with n_na, RF without n_na-0.4629061 0.4576059 0.4538389 0.4604783 0.4629234
 #5 fold - removing zero var and 109 as variable 0.4628673 0.4575760 0.4537044 0.4605410 0.4629253
-#10 fold CV - [1] 0.4604237 0.4646530 0.4598208 0.4538147 0.4506693 0.4538520 0.4707032
-# [8] 0.4510785 0.4524065 0.4619989
+#10 fold CV - [1] 0.4604237 0.4646530 0.4598208 0.4538147 0.4506693 0.4538520 0.4707032 0.4510785 0.4524065 0.4619989
+# 0.4597459
