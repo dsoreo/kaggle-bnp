@@ -20,7 +20,7 @@ for (i in 1:N_FOLDS){
                      num.trees=500,
                      write.forest = TRUE,
                      seed = 12,
-                     mtry = 55,
+                     mtry = 50,
                      probability = TRUE,
                      importance = "impurity",
                      replace = FALSE)
@@ -55,10 +55,11 @@ for (i in 1:N_FOLDS){
   gc(reset=TRUE)
 }
 rf_test_pred <- rf_test_pred/N_FOLDS
-write.csv(rf_val_pred,"rf_val_pred_v2.csv",row.names=FALSE)
-write.csv(rf_test_pred,"rf_test_pred_v2.csv",row.names=FALSE)
+write.csv(rf_val_pred,"rf_val_pred_v3.csv",row.names=FALSE)
+write.csv(rf_test_pred,"rf_test_pred_v3.csv",row.names=FALSE)
 
-#65-0.4686909
+#65-0.4686909, 0.4683207 0.4670127 0.4673237
 #55-0.468484
 #RF scores - 0.4659237 0.4679641 0.4650752 0.4596200 0.4606782 0.4594892 0.4750089 0.4564418 0.4586602 0.4701439
 # RF score with n_na column - 0.4650656 0.4690668 0.4640494 0.4590614 0.4600039 0.4595599 0.4746004 0.4561164 0.4576735 0.4687471
+#Rf score (pca+nearzero+redundant variable remove) - 0.4658379 0.4698279 0.4652090 0.4597085 0.4625640 0.4592899 0.4764052 0.4581301 0.4602892 0.4704253

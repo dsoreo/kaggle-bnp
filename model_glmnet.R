@@ -1,4 +1,4 @@
-IS_RF <- TRUE
+IS_GLMNET <- TRUE
 N_FOLDS <- 10
 library(glmnet)
 source('./code/data_processing.R')
