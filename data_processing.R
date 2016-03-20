@@ -16,6 +16,12 @@ cat("data_processing.R - Read data\n")
 train_data <- read_csv('train.csv')
 test_data <- read_csv('test.csv')
 
+cat("data_processing.R - Removing Null val\n")
+null_var <- c('v8','v23','v25','v31','v36','v37','v46','v51','v53','v54','v63','v73','v75','v79','v81','v82','v89','v92','v95','v105','v107','v108','v109','v110','v116','v117','v118','v119','v123','v124','v128')
+
+train_data <- train_data[,-match(null_var,colnames(train_data))]
+test_data <- test_data[,-match(null_var,colnames(test_data))]
+
 if(IS_GLMNET){
   cat("Remove redundant variables\n")
   #v91=v107,v71=v75,v17=v76,v46=v63,v25=v63,v26=v60,v9=v80+v122

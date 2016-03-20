@@ -17,10 +17,10 @@ et_val_pred <- et_val_pred$PredictedProb
 et_test_pred <- read_csv('./code/test_predictions_etc_v1.csv')
 et_test_pred <- et_test_pred$PredictedProb
 
-# glmnet_val_pred <- read_csv('glmnet_val_pred_v1.csv')
-# glmnet_val_pred <- glmnet_val_pred$x
-# glmnet_test_pred <- read_csv('glmnet_test_pred_v1.csv')
-# glmnet_test_pred <- glmnet_test_pred[,1]
+glmnet_val_pred <- read_csv('glmnet_val_pred_v1.csv')
+glmnet_val_pred <- glmnet_val_pred$x
+glmnet_test_pred <- read_csv('glmnet_test_pred_v1.csv')
+glmnet_test_pred <- glmnet_test_pred[,1]
 
 cat("Get RF values for stacking\n")
 train_data$rf_pred <- rf_val_pred
@@ -28,9 +28,9 @@ test_data$rf_pred <- rf_test_pred
 train_data$et_pred <- et_val_pred
 test_data$et_pred <- et_test_pred
 
-# cat("Get GLMNET values for stacking\n")
-# train_data$glmnet_pred <- glmnet_val_pred
-# test_data$glmnet_pred <- glmnet_test_pred
+cat("Get GLMNET values for stacking\n")
+train_data$glmnet_pred <- glmnet_val_pred
+test_data$glmnet_pred <- glmnet_test_pred
 
 start_time <- Sys.time()
 score <- rep(0,N_FOLD)
@@ -91,7 +91,7 @@ for (i in 1:N_FOLD) {
   if(CREATE_SUB){
     test_predictions <- predict(xgb_model,data.matrix(test_data))
     submission <- data.frame(ID=test_id,PredictedProb=test_predictions)
-    filename <- paste("xgb_sub_v15_file_",i,".csv",sep="")
+    filename <- paste("xgb_sub_v17_file_",i,".csv",sep="")
     write.csv(submission,filename,row.names=FALSE)
   }
 }
@@ -106,3 +106,6 @@ print(Sys.time()-start_time)
 #10 fold CV - [1] 0.4604237 0.4646530 0.4598208 0.4538147 0.4506693 0.4538520 0.4707032 0.4510785 0.4524065 0.4619989
 # 0.4597459
 #0.4516260 0.4558348 0.4497156 0.4473540 0.4422561 0.4467468 0.4627722 0.4432994 0.4434031 0.4535810
+#0.4515179
+#0.451153
+#Score - 0.4511530 0.4556343 0.4490824 0.4462782 0.4416749 0.4457682 0.4621216 0.4431017 0.4428572 0.4531477
