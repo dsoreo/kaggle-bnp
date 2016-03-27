@@ -100,6 +100,19 @@ for (f in fv1) {
 cat("data_processing.R - Impute NAs with median\n")
 c_d <- as.data.frame(apply(c_d,2,impute_median))
 
+c_d$v50xv50 <- c_d$v50 * c_d$v50
+c_d$v50xv62 <- c_d$v50 * c_d$v62
+c_d$v131xv45 <- c_d$v131 * c_d$v45
+c_d$v12xv7 <- c_d$v12 * c_d$v7
+c_d$v27xv99 <- c_d$v27 * c_d$v99
+c_d$v40xv129 <- c_d$v40 * c_d$v129
+c_d$v17xv57 <- c_d$v17 * c_d$v57
+c_d$v26xv17 <- c_d$v26 * c_d$v17
+c_d$v97xv11 <- c_d$v97 * c_d$v11
+c_d$v55xv10 <- c_d$v55 * c_d$v10
+c_d$v68xv1 <- c_d$v68 * c_d$v1
+c_d$v130xv38 <- c_d$v130 * c_d$v38
+
 train_data <- c_d[1:nrow(train_data),]
 test_data <- c_d[(nrow(train_data)+1):nrow(c_d),]
 train_data$target <- train_target

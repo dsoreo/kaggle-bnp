@@ -91,7 +91,7 @@ for (i in 1:N_FOLD) {
   if(CREATE_SUB){
     test_predictions <- predict(xgb_model,data.matrix(test_data))
     submission <- data.frame(ID=test_id,PredictedProb=test_predictions)
-    filename <- paste("xgb_sub_v17_file_",i,".csv",sep="")
+    filename <- paste("xgb_sub_v18_file_",i,".csv",sep="")
     write.csv(submission,filename,row.names=FALSE)
   }
 }
@@ -106,6 +106,4 @@ print(Sys.time()-start_time)
 #10 fold CV - [1] 0.4604237 0.4646530 0.4598208 0.4538147 0.4506693 0.4538520 0.4707032 0.4510785 0.4524065 0.4619989
 # 0.4597459
 #0.4516260 0.4558348 0.4497156 0.4473540 0.4422561 0.4467468 0.4627722 0.4432994 0.4434031 0.4535810
-#0.4515179
-#0.451153
-#Score - 0.4511530 0.4556343 0.4490824 0.4462782 0.4416749 0.4457682 0.4621216 0.4431017 0.4428572 0.4531477
+#0.4511530 0.4556343 0.4490824 0.4462782 0.4416749 0.4457682 0.4621216 0.4431017 0.4428572 0.4531477
