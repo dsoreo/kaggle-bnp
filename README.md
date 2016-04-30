@@ -1,5 +1,5 @@
 # kaggle-bnp
-## 146th place code
+### 146th place code
 ### https://www.kaggle.com/c/bnp-paribas-cardif-claims-management
 
 The code illustrates implementation of stacking as illustrated on this post. https://www.kaggle.com/c/bnp-paribas-cardif-claims-management/forums/t/19134/blended-ensemble-why-it-never-works-for-me/109125#post109125
